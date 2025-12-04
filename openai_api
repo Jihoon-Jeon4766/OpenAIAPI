@@ -1,0 +1,38 @@
+# -*- coding: utf-8 -*-
+
+# 환경 변수(.env) 로부터 API 키 로드
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()  # .env 파일 읽기
+client = OpenAI()  # OPENAI_API_KEY 자동 인식
+
+# -----------------------------------------
+# 1) 기본 메시지 (system + user)
+#    → 필요한 메시지만 남김
+# -----------------------------------------
+messages = [
+    {
+        "role": "system",
+        "content": """
+        너는 대학 수업 추천 도우미야.
+        사용자의 성격, 관심사, 공부 스타일을 보고 어울리는 수업을 추천해 줘.
+        """
+    },
+    {
+        "role": "user",
+        "content": "나는 조용한 성격인데 무슨 수업 들어야 해?",
+    },
+]
+
+# -----------------------------------------
+# 2) OpenAI 응답 생성
+# -----------------------------------------
+completion = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages,
+)
+
+# 결과 출력
+print(completion.choices[0].message.content)
